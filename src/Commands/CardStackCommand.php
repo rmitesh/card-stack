@@ -6,14 +6,15 @@ use Illuminate\Console\Command;
 
 class CardStackCommand extends Command
 {
-    public $signature = 'card-stack';
+    public $signature = 'init:card-stack';
 
-    public $description = 'My command';
+    public $description = 'Initialize card stack';
 
     public function handle(): int
     {
-        $this->comment('All done');
+        $this->call('make:filament-resource CardResource --simple');
 
+        
         return self::SUCCESS;
     }
 }

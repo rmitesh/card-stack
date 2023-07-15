@@ -19,7 +19,7 @@ class CardStackServiceProvider extends PackageServiceProvider
             ->name('card-stack')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_card-stack_table')
+            ->hasMigration('create_card_stack_table')
             ->hasCommand(CardStackCommand::class);
     }
 }
