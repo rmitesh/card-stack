@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Rmitesh\CardStack\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class CardStackCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'card-stack';
 
     public $description = 'My command';
 
