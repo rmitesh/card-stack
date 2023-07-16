@@ -1,24 +1,27 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace Rmitesh\CardStack\Resources;
 
-use App\Filament\Resources\CardResource\Pages;
-use App\Filament\Resources\CardResource\RelationManagers;
-use Rmitesh\CardStack\Models\Card;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Rmitesh\CardStack\Resources\CardResource\Pages;
+use Rmitesh\CardStack\Resources\CardResource\RelationManagers;
+use Rmitesh\CardStack\Models\Card;
 
 class CardResource extends Resource
 {
-    protected static ?string $model = Card::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-document-add';
 
-    protected static ?string $navigationGroup = 'Reports';
+    protected static ?string $navigationGroup = null;
+
+    public static function getModel(): string
+    {
+        return config('card-stack.models.card');
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -30,23 +33,23 @@ class CardResource extends Resource
     public static function getForm(): array
     {
         return [
-            Forms\Components\TextInput::make('name')
-                ->unique()
+            Forms\Components\TextInput::make(config('card-stack.table_column_names.name'))
+                ->unique(ignoreRecord: true)
                 ->autocomplete('off')
                 ->placeholder('Name')
                 ->required(),
 
-            $this->getColorField(),
+            Forms\Components\ColorPicker::make(config('card-stack.table_column_names.color'))
+                ->placeholder('Color')
+                ->hex()
+                ->required(),
 
-            Forms\Components\TextInput::make('position')
+            Forms\Components\TextInput::make(config('card-stack.table_column_names.position'))
                 ->default(function () {
-                    return Card::select('position')
-                        ->whereBelongsTo(auth()->user())
-                        ->latest('id')
-                        ->first()->position + 1;
+                    return static::getModel()::getNextPosition();
                 })
                 ->numeric()
-                ->unique()
+                ->unique(ignoreRecord: true)
                 ->autocomplete(false)
                 ->required(),
         ];
@@ -62,15 +65,16 @@ class CardResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.name'))
+                    ->searchable(),
 
-                Tables\Columns\TextColumn::make('position')
+                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.color'))
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('color')
-                    ->visibility(config('card-stack.enable_chart')),
+                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.position')),
 
                 Tables\Columns\TextColumn::make('created_at')
+                    ->sortable()
                     ->dateTime('dS F, Y h:i A'),
             ])
             ->filters([
@@ -90,18 +94,7 @@ class CardResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManagePlanCategories::route('/'),
+            'index' => Pages\ManageCards::route('/'),
         ];
-    }
-
-    private function getColorField(): Forms\Components\ColorPicker | void
-    {
-        if ( config('card-stack.enable_chart') ) {
-            return Forms\Components\ColorPicker::make('color')
-                    ->placeholder('Color')
-                    ->helperText('It will use in Chart.')
-                    ->hex()
-                    ->required();
-        }
     }
 }

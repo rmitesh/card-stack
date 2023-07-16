@@ -1,30 +1,15 @@
 <?php
 
 return [
-
-	/**
-	 * If you want to display a chart, then make it true.
-	 * For statistics perpose
-	 */
-	'enable_chart' => false,
-
 	'models' => [
-
-		'category' => Spatie\Permission\Models\Permission::class,
-
+		'card' => Rmitesh\CardStack\Models\Card::class,
 	],
 
 	'table_names' => [
-
-		/**
-		 * Table Name, it will use in the migration
-		 */
 		'cards' => 'cards',
-
 	],
 
 	'table_column_names' => [
-
 		/**
 		 * "cards" table schema
 		 */
