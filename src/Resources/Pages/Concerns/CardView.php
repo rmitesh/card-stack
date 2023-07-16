@@ -10,8 +10,6 @@ use Rmitesh\CardStack\Pages\Widgets\CardViewList;
 
 trait CardView
 {
-	// protected static string $view = 'card-stack::card-view';
-
     public $cards = array();
     
     public $record;
