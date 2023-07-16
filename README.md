@@ -1,19 +1,15 @@
-# Creates a Filament Card view
+# Filament Card Stack
+
+![Black Flatlay Photo Motivational Finance Quote Facebook Cover (1)](https://github.com/rmitesh/card-stack/assets/48554454/e114a6e4-adee-4951-85a8-7bae1c8344e7)
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/rmitesh/card-stack.svg?style=flat-square)](https://packagist.org/packages/rmitesh/card-stack)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/rmitesh/card-stack/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/rmitesh/card-stack/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/rmitesh/card-stack/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/rmitesh/card-stack/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/rmitesh/card-stack.svg?style=flat-square)](https://packagist.org/packages/rmitesh/card-stack)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Design for Multi-purpose usage, and also second option of the KanBan Board
 
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/card-stack.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/card-stack)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+Want to see how it's works...? Let's go though below details
 
 ## Installation
 
@@ -22,39 +18,170 @@ You can install the package via composer:
 ```bash
 composer require rmitesh/card-stack
 ```
+You can publish the config file with:
 
+```bash
+php artisan vendor:publish --tag="card-stack-config"
+```
 You can publish and run the migrations with:
 
 ```bash
 php artisan vendor:publish --tag="card-stack-migrations"
 php artisan migrate
 ```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="card-stack-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
 Optionally, you can publish the views using
 
 ```bash
 php artisan vendor:publish --tag="card-stack-views"
 ```
 
-## Usage
+This is the contents of the published config file:
 
 ```php
-$cardStack = new Rmitesh\CardStack();
-echo $cardStack->echoPhrase('Hello, Rmitesh!');
+<?php
+
+return [
+	'models' => [
+		'card' => Rmitesh\CardStack\Models\Card::class,
+	],
+
+	'table_names' => [
+		'cards' => 'cards',
+	],
+
+	'table_column_names' => [
+		/**
+		 * "cards" table schema
+		 */
+		'cards' => [
+			'user_id' => 'user_id',
+
+			'name' => 'name',
+
+			'color' => 'color',
+
+			'position' => 'position',
+		],
+
+	],
+
+];
 ```
+## Usage
+
+> Note: Make sure you have create full resource, not `--simple` resource.
+
+Create a custom resource page
+```bash
+php artisan make:filament-page ViewPlan --resource=PlanResource
+```
+
+Then, register route for this page in `PlanResource` file.
+```php
+public static function getPages(): array
+{
+    return [
+        'view' => Pages\ViewPlan::route('/{record}/view'),
+    ];
+}
+```
+You can give any route name as per your specification.
+
+In `PlanResource/Pages/ViewPlan` file, use `CardView` trait
+```php
+use Rmitesh\CardStack\Resources\Pages\Concerns\CardView;
+
+class ViewPlan extends Page
+{
+    use CardView;
+}
+```
+
+Now, create a custom widget `PlanListView` without any resource and extends with `CardViewList`
+```bash
+php artisan make:filament-widget PlanListView
+```
+```php
+<?php
+
+namespace App\Filament\Widgets;
+
+use Rmitesh\CardStack\Pages\Widgets\CardViewList;
+
+class PlanListView extends CardViewList
+{
+    
+}
+```
+
+then add `getHeaderWidgets()` function in you ViewPlan class.
+```php
+protected function getHeaderWidgets(): array
+{
+    return [
+        PlanListView::class,
+    ];
+}
+```
+
+and here we are good to go!... 🚀🚀🚀
+
+### Extending and customizing CardViewList page.
+
+#### Table listing for each card
+```php
+protected function getTableQuery(): Builder
+{
+    // Your eloquest query
+}
+```
+> `$tableHeadingId` and `$tableHeading` variables are holding the each card's id and name. So if you want to display items based on card id then you can use `$tableHeadingId` variable in your condition.
+
+--------------------------- 
+
+#### Add Table Columns
+To add column in the cards, you can use `getTableColumns()` function in your custom widget class.
+```php
+protected function getTableColumns(): array
+{
+    return [
+        Tables\Columns\TextColumn::make('name'),
+    ];
+}
+```
+
+#### Add Table Actions
+To add table actions in the cards, you can use `getTableActions()` function in your custom widget class.
+```php
+protected function getTableActions(): array
+{
+    return [
+    	// 
+    ];
+}
+```
+
+#### Add Header Actions
+To add table header actions in the cards, you can use `getTableHeaderActions()` function in your custom widget class.
+```php
+protected function getTableHeaderActions(): array
+{
+    return [
+    	// 
+    ];
+}
+```
+
+### Example
+
+Let's take a typical example
+- You are creating montly plans for a work. and you want to manage task list with cards.
+
+Created some Cards
+![image](https://github.com/rmitesh/card-stack/assets/48554454/aebac353-2112-4257-be95-e9ed610bb4ae)
+
+In your plan view screen will be look like this.
+![image](https://github.com/rmitesh/card-stack/assets/48554454/1ca91a33-e706-4570-bffd-42855f757121)
 
 ## Testing
 
