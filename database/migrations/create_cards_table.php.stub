@@ -19,8 +19,7 @@ return new class extends Migration
         Schema::create( $tableNames['cards'] , function (Blueprint $table) use ( $tableNames, $columnNames ) {
             $table->id();
 
-            $table->integer($columnNames[$tableNames['cards']]['user_id'])
-                ->unsigned();
+            $table->unsignedBigInteger($columnNames[$tableNames['cards']]['user_id']);
 
             $table->foreign($columnNames[$tableNames['cards']]['user_id'])
                 ->references('id')

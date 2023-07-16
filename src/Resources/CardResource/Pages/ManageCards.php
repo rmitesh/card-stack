@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\CardResource\Pages;
+namespace Rmitesh\CardStack\Resources\CardResource\Pages;
 
-use App\Filament\Resources\CardResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Database\Eloquent\Model;
+use Rmitesh\CardStack\Resources\CardResource;
 
-class ManageProjectCategories extends ManageRecords
+class ManageCards extends ManageRecords
 {
     protected static string $resource = CardResource::class;
 
@@ -21,5 +21,15 @@ class ManageProjectCategories extends ManageRecords
                 })
                 ->successNotificationTitle('Card has been created.'),
         ];
+    }
+
+    protected function getTableEmptyStateHeading(): ?string
+    {
+        return 'No plan cards found';
+    }
+
+    protected function getTableEmptyStateDescription(): ?string
+    {
+        return 'Click on "Add card" add new';
     }
 }
