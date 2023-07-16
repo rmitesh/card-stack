@@ -33,18 +33,18 @@ class CardResource extends Resource
     public static function getForm(): array
     {
         return [
-            Forms\Components\TextInput::make(config('card-stack.table_column_names.name'))
+            Forms\Components\TextInput::make(config('card-stack.table_column_names.cards.name'))
                 ->unique(ignoreRecord: true)
                 ->autocomplete('off')
                 ->placeholder('Name')
                 ->required(),
 
-            Forms\Components\ColorPicker::make(config('card-stack.table_column_names.color'))
+            Forms\Components\ColorPicker::make(config('card-stack.table_column_names.cards.color'))
                 ->placeholder('Color')
                 ->hex()
                 ->required(),
 
-            Forms\Components\TextInput::make(config('card-stack.table_column_names.position'))
+            Forms\Components\TextInput::make(config('card-stack.table_column_names.cards.position'))
                 ->default(function () {
                     return static::getModel()::getNextPosition();
                 })
@@ -65,13 +65,13 @@ class CardResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.name'))
+                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.cards.name'))
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.color'))
+                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.cards.color'))
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.position')),
+                Tables\Columns\TextColumn::make(config('card-stack.table_column_names.cards.position')),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
