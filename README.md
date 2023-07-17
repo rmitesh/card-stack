@@ -191,6 +191,24 @@ protected function getTableHeaderActions(): array
 }
 ```
 
+#### Change empty state text
+To change empty state table text, you can use `getTableEmptyStateHeading()` function in your custom widget class.
+```php
+protected function getTableEmptyStateHeading(): ?string
+{
+    // your message
+}
+```
+
+#### Change empty state description
+To change empty state table description, you can use `getTableEmptyStateDescription()` function in your custom widget class.
+```php
+protected function getTableEmptyStateDescription(): ?string
+{
+    // your message
+}
+```
+
 ### Example
 
 Let's take a typical example
