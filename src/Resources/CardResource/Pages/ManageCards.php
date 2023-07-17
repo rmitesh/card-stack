@@ -25,7 +25,7 @@ class ManageCards extends ManageRecords
 
     protected function getTableEmptyStateHeading(): ?string
     {
-        return 'No plan cards found';
+        return 'No cards found';
     }
 
     protected function getTableEmptyStateDescription(): ?string

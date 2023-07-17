@@ -5,8 +5,8 @@ namespace Rmitesh\CardStack\Resources\Pages\Concerns;
 use Filament\Pages\Actions;
 use Illuminate\Support\Collection;
 use Rmitesh\CardStack\Models\Card;
-use Rmitesh\CardStack\Resources\CardResource;
 use Rmitesh\CardStack\Pages\Widgets\CardViewList;
+use Rmitesh\CardStack\Resources\CardResource;
 
 trait CardView
 {
@@ -21,9 +21,14 @@ trait CardView
         parent::authorizeResourceAccess();
     }
 
+    protected static function getCardModel(): string
+    {
+        return config('card-stack.models.card');
+    }
+
     private function getCards(): Collection
     {
-        return Card::select([
+        return static::getCardModel()::select([
                 'id', config('card-stack.table_column_names.cards.name'),
             ])
             ->oldest(config('card-stack.table_column_names.cards.position'))

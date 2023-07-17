@@ -44,11 +44,6 @@ class CardViewList extends PageWidget
         return 'Click on "Add Item" add new';
     }
 
-    protected function getTableQuery(): Builder
-    {
-        return Card::query()->latest();
-    }
-
     protected function isTablePaginationEnabled(): bool
     {
         return false;

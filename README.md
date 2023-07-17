@@ -76,7 +76,7 @@ Create a custom resource page
 php artisan make:filament-page ViewPlan --resource=PlanResource
 ```
 
-Then, register route for this page in `PlanResource` file.
+Then, register route for this page in `PlanResource` file and for redirection create a new `Action`.
 ```php
 public static function getPages(): array
 {
@@ -85,7 +85,22 @@ public static function getPages(): array
     ];
 }
 ```
+
+```php
+public static function table(Table $table): Table
+{
+	return $table
+		->actions([
+			Tables\Actions\Action::make('View')
+			    ->icon('heroicon-o-x-eye')
+			    ->color('secondary')
+			    ->url(fn (Model $record) => route('filament.resources.plans.view', ['record' => $record])),
+		])
+}
+```
+
 You can give any route name as per your specification.
+> You can find you routes for the view using `php artisan route:list`.
 
 In `PlanResource/Pages/ViewPlan` file, use `CardView` trait
 ```php
@@ -97,22 +112,37 @@ class ViewPlan extends Page
 }
 ```
 
+Replace the view file located in `resources/views/filament/resources/YOUR RESOURCE/pages/` with following:
+
+```html
+<x-card-stack::card-view :cards="$cards" :record="$record">
+</x-card-stack::card-view>
+```
+
 Now, create a custom widget `PlanListView` without any resource and extends with `CardViewList`
 ```bash
 php artisan make:filament-widget PlanListView
 ```
+
 ```php
 <?php
 
 namespace App\Filament\Widgets;
 
 use Rmitesh\CardStack\Pages\Widgets\CardViewList;
+use Illuminate\Database\Eloquent\Builder;
 
 class PlanListView extends CardViewList
 {
-    
+    protected function getTableQuery(): Builder
+    {
+        // Your eloquest query
+    }
 }
 ```
+
+> `$tableHeadingId` and `$tableHeading` variables are holding the each card's id and name. So if you want to display items based on card id then you can use `$tableHeadingId` variable in your eloquent condition.
+
 
 then add `getHeaderWidgets()` function in you ViewPlan class.
 ```php
@@ -127,17 +157,6 @@ protected function getHeaderWidgets(): array
 and here we are good to go!... 🚀🚀🚀
 
 ### Extending and customizing CardViewList page.
-
-#### Table listing for each card
-```php
-protected function getTableQuery(): Builder
-{
-    // Your eloquest query
-}
-```
-> `$tableHeadingId` and `$tableHeading` variables are holding the each card's id and name. So if you want to display items based on card id then you can use `$tableHeadingId` variable in your condition.
-
---------------------------- 
 
 #### Add Table Columns
 To add column in the cards, you can use `getTableColumns()` function in your custom widget class.
