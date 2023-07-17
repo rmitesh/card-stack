@@ -41,7 +41,9 @@ class CardViewList extends PageWidget
 
     protected function getTableEmptyStateDescription(): ?string
     {
-        return 'Click on "Add Item" add new';
+        if ( !count($this->getTableHeaderActions()) ) {
+            return 'Click on "Add Item" add new';
+        }
     }
 
     protected function isTablePaginationEnabled(): bool
